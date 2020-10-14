@@ -12,7 +12,7 @@ $ yarn install
 
 Datamodel - Prisma schema
 
-![Workflow](documentation/images/prisma-migrate.png)
+![Workflow](https://i.ibb.co/S02741J/prisma-migrate.png)
 
 
 If you have faced problem with migration, [click here](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) to read more.
