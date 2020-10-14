@@ -1,5 +1,5 @@
 # Configure
-Please, create .env.development from example.env by coping and configure parameters for AWS cognito
+Please, create .env.development from example.env by coping and configure database and port
 
 1. First install packages
 ```
