@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
-import { PubSub } from 'graphql-yoga'
-import { ContextParameters } from 'graphql-yoga/dist/types'
+import { PubSub } from 'apollo-server-express'
+import { ExpressContext } from 'apollo-server-express/dist/ApolloServer'
 import { getUserEmail, Token } from './utils'
 
 const prisma = new PrismaClient({
@@ -21,11 +21,11 @@ export interface Context {
   auth: Token
 }
 
-export async function createContext(ctx: ContextParameters) {
+export async function createContext(ctx: ExpressContext) {
   return {
     ...ctx,
     prisma: prisma,
     pubsub,
-    auth: getUserEmail(ctx),
+    // auth: getUserEmail(ctx),
   }
 }

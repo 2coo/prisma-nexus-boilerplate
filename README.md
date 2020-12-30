@@ -1,38 +1,24 @@
-# Configure
-Please, create .env.development from example.env by coping and configure database and port
+# README
 
-1. First install packages
+1. Create copy environment variable for development then configure database and port
+```
+$ cp example.env .env.development
+```
+
+2. First install packages
 ```
 $ yarn install
 ```
 
-`After that it will generate Prisma client automatically.`
-
-`Don't install prisma/client & prisma/cli because you already have prisma cli from nexus-prisma-plugin.`
-
-Datamodel - Prisma schema
-
-![Workflow](https://i.ibb.co/S02741J/prisma-migrate.png)
-
-
-If you have faced problem with migration, [click here](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) to read more.
-
-
-Command:
-
+3. Then create tables using command below
 ```
-$ npx prisma
+$ yarn dev:migrate
 ```
 
-```
-$ npx prisma migrate
-```
-
-
-# Run install
+# Run Development
 
 ```
-$ yarn run dev
+$ yarn dev
 ```
 
 

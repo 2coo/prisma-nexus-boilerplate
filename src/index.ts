@@ -1,32 +1,31 @@
 import { config } from 'dotenv-flow'
 config()
-import { GraphQLServer } from 'graphql-yoga'
+import { ApolloServer } from 'apollo-server-express'
+import cookieParser from 'cookie-parser'
+import express from 'express'
+import { applyMiddleware } from 'graphql-middleware'
+import * as HTTP from 'http'
 import { createContext } from './context'
 import { permissions } from './permissions'
 import { schema } from './schema'
-import { formatError } from 'apollo-errors'
 
-const graphqlServer = new GraphQLServer({
-  schema,
+const port = process.env.PORT || 5000
+const host = process.env.HOST || "localhost"
+
+const graphqlServer = new ApolloServer({
+  schema: applyMiddleware(schema, permissions),
   context: createContext,
-  middlewares: [permissions],
 })
-
-graphqlServer.start(
-  {
-    endpoint: '/graphql',
-    subscriptions: '/subscriptions',
-    playground: process.env.NODE_ENV === 'development' ? '/playground' : false,
-    debug: process.env.NODE_ENV === 'development',
-    formatError,
-    port: 4040,
-  },
-  ({ port, endpoint, subscriptions, playground }) =>
-    console.log(
-      `🚀 Server ready at: http://localhost:${port}${endpoint}, http://localhost:${port}${subscriptions}. ⭐️${
-        playground
-          ? `\n🚀 Playground ready at: http://localhost:${port}${playground} ⭐️`
-          : ''
-      }`,
-    ),
+const app = express().use(
+  cookieParser(process.env.SESSION_SECRET || 's4per$ecret'),
 )
+const http = HTTP.createServer(app)
+
+graphqlServer.applyMiddleware({ app })
+graphqlServer.installSubscriptionHandlers(http)
+
+http.listen(Number(port), String(host), () => {
+  console.log(
+    `🚀 GraphQL service ready at http://${host}:${port}/graphql`,
+  )
+})

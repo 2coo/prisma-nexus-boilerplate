@@ -1,32 +1,34 @@
-import { config } from 'dotenv'
-config()
-import { join } from 'path'
-import { makeSchema } from '@nexus/schema'
-import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
+import { makeSchema } from 'nexus'
+import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as types from './types'
+import path from 'path'
 
 export const schema = makeSchema({
+  shouldExitAfterGenerateArtifacts:
+    process.env.NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === 'true',
   types,
   plugins: [
-    nexusSchemaPrisma({
+    nexusPrisma({
       experimentalCRUD: true,
     }),
   ],
-  outputs: {
-    typegen: join(__dirname, 'generated', 'index.d.ts'),
-    schema: join(__dirname, 'generated', 'schema.graphql'),
+  contextType: {
+    module: require.resolve('.prisma/client/index.d.ts'),
+    export: 'PrismaClient',
   },
-  typegenAutoConfig: {
-    sources: [
+  sourceTypes: {
+    modules: [
       {
-        source: '@prisma/client',
-        alias: 'prisma',
-      },
-      {
-        source: join(__dirname, '../context.ts'),
-        alias: 'ctx',
+        module: require.resolve('.prisma/client/index.d.ts'),
+        alias: 'PrismaClient',
       },
     ],
-    contextType: 'ctx.Context',
+  },
+  outputs: {
+    typegen: path.join(
+      __dirname,
+      '../../node_modules/@types/nexus-typegen/index.d.ts',
+    ),
+    schema: path.join(__dirname, '../../api.graphql'),
   },
 })

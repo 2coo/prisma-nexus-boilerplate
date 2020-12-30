@@ -1,16 +1,15 @@
-import * as schema from '@nexus/schema'
+import { queryType } from 'nexus'
 import moment = require('moment-timezone')
-export const Query = schema.queryType({
+export const Query = queryType({
   definition(t) {
     t.crud.user()
     t.crud.users({ filtering: true, ordering: true, pagination: true })
-    t.field('me', {
+    t.nullable.field('me', {
       type: 'User',
-      nullable: true,
       resolve: (parent, args, ctx) => {
-        return ctx.prisma.user.findOne({
+        return ctx.prisma.user.findUnique({
           where: { email: ctx.auth.email },
-        })
+        });
       },
     })
   },
